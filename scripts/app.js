@@ -28,13 +28,13 @@ class MyDOM {
 	};
 
 	//! 2. Select Elements
-	static select(element, all = false) {
+	static select = (element, all = false) => {
 		if (all) {
 			return [...document.querySelectorAll(element)];
 		} else {
 			return document.querySelector(element);
 		}
-	}
+	};
 }
 
 //^===================================
@@ -48,16 +48,16 @@ class Game {
 		this.submittedAnswers = 0;
 	}
 
-	getQuestions(URL) {
+	getQuestions = (URL) => {
 		return axios.get(URL).then((response) => {
 			this.questions = response.data;
 			this.totalRounds = response.data.length;
 
 			this.newRound(response.data);
 		});
-	}
+	};
 
-	getState() {
+	getState = () => {
 		return {
 			questions: this.questions,
 			totalRounds: this.totalRounds,
@@ -66,44 +66,30 @@ class Game {
 			score2: this.score2,
 			submittedAnswers: this.submittedAnswers,
 		};
-	}
+	};
 
 	//! on next, create new round
 
-	newRound() {
-		if (this.totalRounds >= this.currentRound) {
-			new Round(this.getState()).makeCards();
+	newRound = () => {
+		console.log(
+			this.totalRounds + "total rounds",
+			this.currentRound + "current round"
+		);
+		UI.clearCards();
+		game.submittedAnswers = 0;
+		if (this.totalRounds > this.currentRound) {
+			new Round(this.getState()).createCards();
 			this.currentRound++;
 		} else {
 			console.log("gameover");
+			UI.showGameOveR();
 		}
-	}
+	};
 
-	increment(property) {
+	increment = (property) => {
 		this[property]++;
-		console.log(this[property]);
-	}
+	};
 }
-
-const startBtn = MyDOM.select(".start__button");
-startBtn.addEventListener("click", () => handleStart());
-
-let game = new Game();
-// console.log(game);
-
-const handleStart = () => {
-	//Category
-	const categoryVal = MyDOM.select(".select__wrapper").value;
-	//Number of rounds
-	const rounds = MyDOM.select(".input__limit").value;
-	//URL
-	const URL = `https://api.trivia.willfry.co.uk/questions?categories=${categoryVal}&limit=${rounds}`;
-
-	const startMenuEl = MyDOM.select(".start");
-	startMenuEl.style.visibility = "hidden";
-
-	game.getQuestions(URL);
-};
 
 //^===================================
 class Round {
@@ -112,7 +98,7 @@ class Round {
 		console.log(this.props);
 	}
 
-	makeCards() {
+	createCards = () => {
 		new Card(
 			this.props,
 			this.props.questions[this.props.currentRound],
@@ -123,9 +109,11 @@ class Round {
 			this.props.questions[this.props.currentRound],
 			2
 		).render();
-	}
+		console.log("current round is " + game.currentRound);
+	};
 }
 //^===================================
+
 class Card {
 	constructor(state, questionObj, playerId) {
 		this.state = state;
@@ -138,7 +126,7 @@ class Card {
 		this.incorrectAs = this.currQObj.incorrectAnswers;
 	}
 	//!===================================
-	render() {
+	render = () => {
 		const randomizeAnswers = () => {
 			return this.answers.sort(() => (Math.random() > 0.5 ? 1 : -1));
 		};
@@ -149,9 +137,9 @@ class Card {
 		const cardEl = MyDOM.select(`.card-${this.playerId}`);
 		// console.log(cardEl);
 		cardEl.appendChild(cardHtml);
-	}
+	};
 	//!===================================
-	createHtmlCard() {
+	createHtmlCard = () => {
 		//! Container
 		const triviaContainerEl = MyDOM.create("div", ".trivia__container");
 		const playerLabel = MyDOM.create(
@@ -162,9 +150,8 @@ class Card {
 		playerLabel.innerText = "Player " + this.playerId;
 
 		const scoreLabel = MyDOM.create("h4", "trivia__score", triviaContainerEl);
-		console.log("🚀 ~ file: Card.mjs ~ line 42 ~ scoreLabel", scoreLabel);
 		scoreLabel.innerText = `Score: ${
-			this.playerId === 1 ? this.state.score1 : this.state.score2
+			this.playerId === 1 ? game.score1 : game.score2
 		}`;
 
 		//! Question
@@ -202,32 +189,38 @@ class Card {
 		triviaSubmitBtn.addEventListener("click", this.handleSubmit);
 
 		return triviaContainerEl;
-	}
+	};
 	//!===================================
-	handleSelect(e) {
+	handleSelect = (e) => {
 		console.log("selected", this.playerId);
 		const answerEls = e.target.parentElement.children;
+		console.log(answerEls);
 		Array.from(answerEls).forEach((answerEl) => {
 			if (answerEl.classList.contains("trivia__answer--selected")) {
 				answerEl.classList.remove("trivia__answer--selected");
 			}
 		});
 		e.target.classList.add("trivia__answer--selected");
-	}
+	};
 
 	//!===================================
-	handleSubmit(e) {
-		console.log("handling comment submit");
-		// console.log(game.submittedAnswers);
+	handleSubmit = (e) => {
+		//* if current pplayer submitted their answer, remove Ev Listener
+
+		if (!this.answerIsSelected(e)) {
+			console.log("nothing is selected");
+			return;
+		}
+		e.target.removeEventListener("click", this.handleSubmit);
 		game.increment("submittedAnswers");
-		console.log(game.submittedAnswers);
-		//
-		const triviaSubmitBtn = MyDOM.select(".trivia__submit");
+
+		const triviaSubmitBtn = e.target;
 		if (this.isCorrect(e)) {
 			triviaSubmitBtn.innerText = "Correct";
 			triviaSubmitBtn.style.backgroundColor = "green";
-			if (e.target.parentElement.classList.contains("player1")) {
-				// state.score1 += 1;
+			if (
+				e.target.parentElement.parentElement.classList.contains("card-1")
+			) {
 				game.increment("score1");
 				const scoreLabel = e.target.parentElement.children[1];
 				scoreLabel.innerText = "Score: " + game[`score${1}`];
@@ -236,17 +229,33 @@ class Card {
 				const scoreLabel = e.target.parentElement.children[1];
 				scoreLabel.innerText = "Score: " + game[`score${2}`];
 			}
-
-			console.log("currect");
+			console.log("correct");
 		} else {
 			triviaSubmitBtn.innerText = "InCorrect";
 			triviaSubmitBtn.style.backgroundColor = "red";
 		}
-		console.log("Player 1 score", game.score1);
-		console.log("Player 2 score", game.score2);
-	}
+
+		//* check if both players have submitted their answer
+		if (game.submittedAnswers === 2) {
+			game.increment("currentRound");
+			UI.showNextButton();
+			return;
+		}
+	};
+	answerIsSelected = (e) => {
+		console.log("checking if an answer is selected");
+		//* check if any answers are selected.
+		const answerEls = e.target.previousElementSibling.children;
+		let somethingSelected = false;
+		Array.from(answerEls).forEach((answerEl) => {
+			if (answerEl.classList.contains("trivia__answer--selected")) {
+				somethingSelected = true;
+			}
+		});
+		return somethingSelected;
+	};
 	//!===================================
-	isCorrect = function (e) {
+	isCorrect = (e) => {
 		console.log("checking if correct");
 		console.log(e.target.previousElementSibling);
 		const answersParent = e.target.previousElementSibling.children;
@@ -263,6 +272,51 @@ class Card {
 				status = true;
 			}
 		});
+		console.log(status);
 		return status;
 	};
 }
+
+//^===================================
+class UI {
+	static clearCards = () => {
+		const card1 = MyDOM.select(".card-1");
+		console.log("container selected");
+		card1.textContent = "";
+		const card2 = MyDOM.select(".card-2");
+		console.log("container selected");
+		card2.textContent = "";
+		const infoContainer = MyDOM.select(".info__container");
+		// infoContainer.style.display = "none";
+		infoContainer.classList.remove("info__container--show");
+	};
+
+	static showNextButton = () => {
+		const infoContainer = MyDOM.select(".info__container");
+		infoContainer.classList.add("info__container--show");
+		const infoBtn = MyDOM.select(".info__button");
+		infoBtn.innerText = "Next Question";
+		infoBtn.addEventListener("click", game.newRound);
+	};
+}
+
+//*===================================
+const startBtn = MyDOM.select(".start__button");
+startBtn.addEventListener("click", () => handleStart());
+
+let game = new Game();
+// console.log(game);
+
+const handleStart = () => {
+	//Category
+	const categoryVal = MyDOM.select(".select__wrapper").value;
+	//Number of rounds
+	const rounds = MyDOM.select(".input__limit").value;
+	//URL
+	const URL = `https://api.trivia.willfry.co.uk/questions?categories=${categoryVal}&limit=${rounds}`;
+
+	const startMenuEl = MyDOM.select(".start");
+	startMenuEl.style.visibility = "hidden";
+
+	game.getQuestions(URL);
+};
