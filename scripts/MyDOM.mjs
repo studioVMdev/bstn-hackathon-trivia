@@ -30,17 +30,4 @@ export default class MyDOM {
 			return document.querySelector(element)
 		}
 	}
-
-	// //! 3. Add Event Listeners to Elements
-	// static on(type, element, handler, all = false) {
-	// 	let selectedEl = this.select(element, all)
-
-	// 	if (selectedEl) {
-	// 		if (all) {
-	// 			selectedEl.forEach((e) => e.addEventListener(type, handler))
-	// 		} else {
-	// 			selectedEl.addEventListener(type, handler)
-	// 		}
-	// 	}
-	// }
 }
