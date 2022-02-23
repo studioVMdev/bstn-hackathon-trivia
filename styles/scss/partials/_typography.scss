@@ -1,0 +1,13 @@
+@use './variables' as *;
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,400;1,700&display=swap');
+
+
+*, 
+*:before, 
+*:after {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 200;
+  color: $clr-primary-light;
+  color: $clr-accent-light;
+}

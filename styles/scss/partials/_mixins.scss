@@ -1,0 +1,11 @@
+@use './variables' as *;
+
+@mixin card-style{
+  background-color: $clr-primary-dark;
+	padding: 2rem;
+	border-radius: 1rem;
+  border: 3px dashed $clr-accent-dark;
+	max-width: 24rem;
+  -webkit-box-shadow: 5px 5px 15px 5px rgba(22,49,100,0.31); 
+  box-shadow: 5px 5px 15px 5px rgba(7, 29, 69, 0.31);
+}
