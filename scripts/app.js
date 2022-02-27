@@ -65,10 +65,6 @@ class Game {
 			this.setState({ questions: response.data });
 			this.setState({ totalRounds: response.data.length });
 			this.newRound(game.getState());
-			console.log(
-				`🚀 ~ file: app.js ~ line 76 ~ Game ~ returnaxios.get ~ game.getState()`,
-				game.getState()
-			);
 		});
 	};
 
@@ -88,7 +84,6 @@ class Game {
 		//todo
 		if (state.totalRounds > state.currentRoundIndex) {
 			UI.showBoard();
-			console.log("state before new round: ", this.getState());
 			new Round(state.questions[state.currentRoundIndex]).createCards();
 		} else {
 			return;
@@ -206,7 +201,6 @@ class Card {
 	handleSelect = (e) => {
 		console.log("Player", this.playerId, " has selected their answer");
 		const answerEls = e.target.parentElement.children;
-		console.log(answerEls);
 		Array.from(answerEls).map((answerEl) => {
 			if (answerEl.classList.contains("trivia__answer--selected")) {
 				answerEl.classList.remove("trivia__answer--selected");
@@ -219,7 +213,6 @@ class Card {
 	handleSubmit = (e) => {
 		//* if current player submitted their answer, remove Ev Listener
 		console.log("Player ", this.playerId, " submitted their answer");
-		console.log(game.getState());
 		if (!this.answerIsSelected(e)) {
 			console.log("nothing is selected");
 			return;
@@ -300,7 +293,6 @@ class UI {
 	};
 
 	static handleStart = () => {
-		console.log(game);
 		game = new Game();
 		//Category
 		const categoryVal = MyDOM.select(".select__wrapper").value;
@@ -337,8 +329,8 @@ class UI {
 	static showStartMenu = () => {
 		const startMenuEl = MyDOM.select(".start");
 		startMenuEl.style.visibility = "visible";
-    const infoEl = MyDOM.select('.info');
-    infoEl.style.visibility = "hidden";
+		const infoEl = MyDOM.select(".info");
+		infoEl.style.visibility = "hidden";
 	};
 
 	static showInfoBtn = () => {
@@ -361,9 +353,9 @@ class UI {
 			infoContainer.style.visibility = "visible";
 			infoMessage.innerText = game.getWinner();
 			infoContainer.classList.add("card-style");
-      infoBtn.innerText = "Play Again";
-      const infoEl = MyDOM.select('.info');
-      infoEl.style.visibility = "visible";
+			infoBtn.innerText = "Play Again";
+			const infoEl = MyDOM.select(".info");
+			infoEl.style.visibility = "visible";
 			infoBtn.addEventListener("click", UI.playAgain);
 		}
 	};
@@ -388,5 +380,5 @@ class UI {
 const startBtn = MyDOM.select(".start__button");
 startBtn.addEventListener("click", () => UI.handleStart());
 
-let game = null;
+let game;
 // console.log(game);

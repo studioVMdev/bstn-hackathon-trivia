@@ -12,8 +12,6 @@ body {
 .header {
 	text-align: center;
 	color: rgb(213, 206, 206);
-	font-weight: 600;
-	letter-spacing: 0.1rem;
 	color: lightseagreen;
 }
 
@@ -49,7 +47,6 @@ body {
 	font-weight: 400;
 	width: 100%;
 	background-color: $clr-accent-light;
-	border-radius: 8px;
 }
 
 .input__limit {
@@ -70,15 +67,9 @@ body {
 	color: $clr-primary-dark;
 	font-weight: 700;
 	&:hover {
-		background-color: $clr-accent-light;
+		background-color: $clr-primary-correct;
 		border: 1px solid $clr-primary-dark;
-		box-shadow: 9px 9px 0px 0px #000000;
-	}
-	&:active {
-		background-color: $clr-accent-light;
-		border: 1px solid $clr-primary-dark;
-		box-shadow: 2px 2px 0px 0px #000000;
-		transform: translate(2px, 2px);
+		box-shadow: inset;
 	}
 }
 .trivia__board {
@@ -105,6 +96,10 @@ body {
 	}
 }
 
+// .card-style {
+// 	@include card-style;
+// }
+
 .card-1 {
 	width: max-content;
 	transform: rotate(90deg);
@@ -130,32 +125,22 @@ body {
 }
 
 .trivia__question {
-	margin-bottom: 1rem;
-	font-weight: 400;
-	border-bottom: 1px solid $clr-accent-light;
-}
-
-.trivia__answer{
-  cursor: pointer;
-}
-.trivia__answer:hover {
-	background-color: $clr-primary-light;
-  cursor: pointer;
+	padding-bottom: 1rem;
 }
 
 .trivia__answer--selected {
 	background-color: $clr-accent-light;
 }
 
-.info {
-	content: "";
-	width: 100%;
-	height: 100%;
-	left: 0;
-	top: 0;
-	background-color: rgba($color: #000000, $alpha: 0.95);
-	position: absolute;
-	visibility: hidden;
+.info{
+  content: "";
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background-color: rgba($color: #000000, $alpha: 0.95);
+  position: absolute;
+  visibility: hidden;
 }
 
 .info__container {

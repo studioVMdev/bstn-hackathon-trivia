@@ -5,10 +5,18 @@
   font-family: "Poppins", sans-serif;
   font-size: 1rem;
   font-weight: 200;
+  font-size: 0.9rem;
   color: #e2e6dd;
   color: #FFBB33;
 }
 
+@media only screen and (min-width: 1000px) {
+  *,
+*:before,
+*:after {
+    font-size: 1.2rem;
+  }
+}
 /* Box sizing rules */
 *,
 *::before,
@@ -208,6 +216,8 @@ body {
 .header {
   text-align: center;
   color: #d5cece;
+  font-weight: 600;
+  letter-spacing: 0.1rem;
   color: lightseagreen;
 }
 
@@ -231,9 +241,9 @@ body {
   transform: translate(-50%, -50%);
   max-width: 20rem;
 }
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 1000px) {
   .start {
-    padding: 2rem;
+    padding: 1rem;
   }
 }
 .start__container {
@@ -261,6 +271,7 @@ body {
   font-weight: 400;
   width: 100%;
   background-color: #FFBB33;
+  border-radius: 8px;
 }
 
 .input__limit {
@@ -282,9 +293,15 @@ body {
   font-weight: 700;
 }
 .btn:hover {
-  background-color: lightseagreen;
+  background-color: #FFBB33;
   border: 1px solid #550055;
-  box-shadow: inset;
+  box-shadow: 9px 9px 0px 0px #000000;
+}
+.btn:active {
+  background-color: #FFBB33;
+  border: 1px solid #550055;
+  box-shadow: 2px 2px 0px 0px #000000;
+  transform: translate(2px, 2px);
 }
 
 .trivia__board {
@@ -311,12 +328,12 @@ body {
   box-shadow: 5px 5px 15px 5px rgba(7, 29, 69, 0.31);
   width: 200px;
 }
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 1000px) {
   .trivia__card {
-    padding: 2rem;
+    padding: 1rem;
   }
 }
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 1000px) {
   .trivia__card {
     min-width: 18rem;
   }
@@ -347,7 +364,18 @@ body {
 }
 
 .trivia__question {
-  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  font-weight: 400;
+  border-bottom: 1px solid #FFBB33;
+}
+
+.trivia__answer {
+  cursor: pointer;
+}
+
+.trivia__answer:hover {
+  background-color: #e2e6dd;
+  cursor: pointer;
 }
 
 .trivia__answer--selected {
@@ -387,9 +415,9 @@ body {
   -webkit-box-shadow: 5px 5px 15px 5px rgba(22, 49, 100, 0.31);
   box-shadow: 5px 5px 15px 5px rgba(7, 29, 69, 0.31);
 }
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 1000px) {
   .info__container.card-style {
-    padding: 2rem;
+    padding: 1rem;
   }
 }
 
