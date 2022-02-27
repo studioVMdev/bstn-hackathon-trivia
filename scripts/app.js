@@ -39,58 +39,66 @@ class MyDOM {
 
 //^===================================
 class Game {
-	constructor(questions) {
-		this.questions = null;
-		this.totalRounds = 0;
-		this.currentRoundIndex = 0;
-		this.score1 = 0;
-		this.score2 = 0;
-		this.submittedAnswers = 0;
+	constructor() {
+		this.state = {
+			questions: null,
+			totalRounds: 0,
+			currentRoundIndex: 0,
+			score1: 0,
+			score2: 0,
+			submittedAnswers: 0,
+		};
 	}
+	incrementProperty = (property) => {
+		this.state[property]++;
+	};
+	getState = () => {
+		return this.state;
+	};
+
+	setState = (newState) => {
+		this.state = { ...this.state, ...newState };
+	};
 
 	getQuestions = (URL) => {
 		return axios.get(URL).then((response) => {
-			this.questions = response.data;
-			this.totalRounds = response.data.length;
-			this.newRound(response.data);
+			this.setState({ questions: response.data });
+			this.setState({ totalRounds: response.data.length });
+			this.newRound(game.getState());
+			console.log(
+				`🚀 ~ file: app.js ~ line 76 ~ Game ~ returnaxios.get ~ game.getState()`,
+				game.getState()
+			);
 		});
 	};
 
-	getState = () => {
-		return {
-			questions: this.questions,
-			totalRounds: this.totalRounds,
-			currentRoundIndex: this.currentRoundIndex,
-			score1: this.score1,
-			score2: this.score2,
-			submittedAnswers: this.submittedAnswers,
-		};
-	};
-
 	newRound = () => {
+		this.setState({ submittedAnswers: 0 });
 		UI.clearCards();
 		UI.hideInfoBtn();
+		const infoBtn = MyDOM.select(".info__button");
+		infoBtn.removeEventListener("click", game.newRound);
+		infoBtn.removeEventListener("click", UI.playAgain);
+		console.log("cards cleared");
+		const state = this.state;
 		console.log(
-			this.totalRounds + " total rounds",
-			this.currentRoundIndex + " current round"
+			" totalRounds: " + state.totalRounds,
+			" currentRoundIndex: " + state.currentRoundIndex
 		);
-		game.submittedAnswers = 0;
-
-		if (this.totalRounds > this.currentRoundIndex) {
+		//todo
+		if (state.totalRounds > state.currentRoundIndex) {
 			UI.showBoard();
-			console.log(this.getState(), "state before new round");
-			new Round(this.getState()).createCards();
+			console.log("state before new round: ", this.getState());
+			new Round(state.questions[state.currentRoundIndex]).createCards();
+		} else {
+			return;
 		}
 	};
 
-	increment = (property) => {
-		this[property]++;
-	};
-
 	getWinner = () => {
-		if (this.score1 > this.score2) {
+		if (this.state.score1 > this.state.score2) {
 			return "Player 1 won!";
-		} else if (this.score1 < this.score2) {
+		} else if (this.state.score1 < this.state.score2) {
 			return "Player 2 won!";
 		} else {
 			return "It was a draw!";
@@ -100,35 +108,27 @@ class Game {
 
 //^===================================
 class Round {
-	constructor(props) {
-		this.props = props;
+	constructor(currentQuestion) {
+		this.currentQuestion = currentQuestion;
 	}
 
 	createCards = () => {
-		console.log("current round index is " + game.currentRoundIndex);
-		new Card(
-			this.props,
-			this.props.questions[this.props.currentRoundIndex],
-			1
-		).render();
-		new Card(
-			this.props,
-			this.props.questions[this.props.currentRoundIndex],
-			2
-		).render();
+		const currentQuestion = this.currentQuestion;
+		//Player 1 card
+		new Card(currentQuestion, 1).render();
+		//Player 2 card
+		new Card(currentQuestion, 2).render();
 	};
 }
 //^===================================
 
 class Card {
-	constructor(state, questionObj, playerId) {
-		this.state = state;
-		this.currQObj = questionObj;
+	constructor(currentQuestion, playerId) {
+		this.currentQuestion = currentQuestion;
 		this.playerId = playerId;
-		console.log(this.currQObj);
-		this.currQuestionText = this.currQObj.question;
-		this.correctA = this.currQObj.correctAnswer;
-		this.incorrectAs = this.currQObj.incorrectAnswers.slice(0, 3);
+		this.currQuestionText = this.currentQuestion.question;
+		this.correctA = this.currentQuestion.correctAnswer;
+		this.incorrectAs = this.currentQuestion.incorrectAnswers.slice(0, 3);
 		this.answers = [];
 	}
 	//!===================================
@@ -139,7 +139,7 @@ class Card {
 	};
 	//!===================================
 	createHtmlCard = () => {
-		//* Randomize answers
+		//* Randomize answers order for each card
 		this.answers.push(this.correctA);
 		this.answers.push(...this.incorrectAs);
 		this.answers.sort(() => (Math.random() > 0.5 ? 1 : -1));
@@ -166,7 +166,7 @@ class Card {
 			statsWrapper
 		);
 		scoreLabel.innerText = `Score: ${
-			this.playerId === 1 ? game.score1 : game.score2
+			this.playerId === 1 ? game.state.score1 : game.state.score2
 		}`;
 
 		//* Question
@@ -204,7 +204,7 @@ class Card {
 	};
 	//!===================================
 	handleSelect = (e) => {
-		console.log("selected", this.playerId);
+		console.log("Player", this.playerId, " has selected their answer");
 		const answerEls = e.target.parentElement.children;
 		console.log(answerEls);
 		Array.from(answerEls).map((answerEl) => {
@@ -218,15 +218,14 @@ class Card {
 	//!===================================
 	handleSubmit = (e) => {
 		//* if current player submitted their answer, remove Ev Listener
-
+		console.log("Player ", this.playerId, " submitted their answer");
 		console.log(game.getState());
 		if (!this.answerIsSelected(e)) {
 			console.log("nothing is selected");
 			return;
 		}
 		e.target.removeEventListener("click", this.handleSubmit);
-		game.increment("submittedAnswers");
-
+		game.incrementProperty("submittedAnswers");
 		const triviaSubmitBtn = e.target;
 		if (this.isCorrect(e)) {
 			triviaSubmitBtn.innerText = "Correct";
@@ -234,13 +233,13 @@ class Card {
 			if (
 				e.target.parentElement.parentElement.classList.contains("card-1")
 			) {
-				game.increment("score1");
+				game.incrementProperty("score1");
 				const scoreLabel = e.target.parentElement.children[0].children[1];
-				scoreLabel.innerText = "Score: " + game[`score${1}`];
+				scoreLabel.innerText = "Score: " + game.state[`score${1}`];
 			} else {
-				game.increment("score2");
+				game.incrementProperty("score2");
 				const scoreLabel = e.target.parentElement.children[0].children[1];
-				scoreLabel.innerText = "Score: " + game[`score${2}`];
+				scoreLabel.innerText = "Score: " + game.state[`score${2}`];
 			}
 			console.log("correct");
 		} else {
@@ -249,13 +248,8 @@ class Card {
 		}
 
 		//* check if both players have submitted their answer
-		if (game.submittedAnswers === 2) {
-			console.log("both players submitted answers");
-			// if (game.totalRounds === game.currentRoundIndex) {
-			//   console.log("gameOver");
-			//   UI.gameOver();
-			// }
-			game.increment("currentRoundIndex");
+
+		if (game.state.submittedAnswers === 2) {
 			UI.showInfoBtn();
 		}
 	};
@@ -275,7 +269,6 @@ class Card {
 	//!===================================
 	isCorrect = (e) => {
 		console.log("checking if correct");
-		console.log(e.target.previousElementSibling);
 		const answersParent = e.target.previousElementSibling.children;
 
 		let status = false;
@@ -290,7 +283,7 @@ class Card {
 				status = true;
 			}
 		});
-		console.log(status);
+		console.log("selected answer is correct: ", status);
 		return status;
 	};
 }
@@ -304,12 +297,10 @@ class UI {
 		const card2 = MyDOM.select(".card-2");
 		console.log("container selected");
 		card2.textContent = "";
-		// const infoContainer = MyDOM.select(".info__container");
-		// infoContainer.style.display = "none";
-		// infoContainer.classList.remove("info__container--show");
 	};
 
 	static handleStart = () => {
+		console.log(game);
 		game = new Game();
 		//Category
 		const categoryVal = MyDOM.select(".select__wrapper").value;
@@ -322,20 +313,25 @@ class UI {
 	};
 
 	static playAgain = () => {
+		console.log("play again button clicked");
 		UI.hideBoard();
 		UI.hideInfoBtn();
 		UI.showStartMenu();
-
-		const selectedOption = MyDOM.select(".selected-option");
-		selectedOption.setAttribute("selected", "selected");
-		const minNumber = MyDOM.select(".input__limit");
-		minNumber.value = "1";
-		// UI.resetStartValues();
+		const infoContainer = MyDOM.select(".info__container");
+		const infoMessage = MyDOM.select(".info__message");
+		const infoBtn = MyDOM.select(".info__button");
+		infoMessage.style.visibility = "hidden";
+		infoContainer.style.visibility = "hidden";
+		infoMessage.innerText = "";
 	};
 
 	static hideStartMenu = () => {
 		const startMenuEl = MyDOM.select(".start");
 		startMenuEl.style.visibility = "hidden";
+		const selectedOption = MyDOM.select(".selected-option");
+		selectedOption.setAttribute("selected", "selected");
+		const minNumber = MyDOM.select(".input__limit");
+		minNumber.value = "1";
 	};
 
 	static showStartMenu = () => {
@@ -344,23 +340,30 @@ class UI {
 	};
 
 	static showInfoBtn = () => {
+		const infoContainer = MyDOM.select(".info__container");
 		const infoBtn = MyDOM.select(".info__button");
 		infoBtn.style.visibility = "visible";
-		const infoContainer = MyDOM.select(".info__container");
+		//todo:
 
-		if (game.totalRounds === game.currentRoundIndex) {
+		if (game.state.totalRounds > game.state.currentRoundIndex + 1) {
+			console.log("showing next question button");
+			console.log(game.getState());
+			infoBtn.innerText = "Next Question";
+			game.incrementProperty("currentRoundIndex");
+			infoBtn.addEventListener("click", game.newRound);
+		} else {
+			infoContainer.classList.remove("card-style");
+			console.log("game over, showing play again button");
 			const infoMessage = MyDOM.select(".info__message");
+			infoMessage.style.visibility = "visible";
+			infoContainer.style.visibility = "visible";
 			infoMessage.innerText = game.getWinner();
-			infoMessage.innerText = "test";
 			infoContainer.classList.add("card-style");
 			infoBtn.innerText = "Play Again";
 			infoBtn.addEventListener("click", UI.playAgain);
-		} else {
-			infoContainer.classList.remove("card-style");
-			infoBtn.innerText = "Next Question";
-			infoBtn.addEventListener("click", game.newRound);
 		}
 	};
+
 	static hideInfoBtn = () => {
 		const infoBtn = MyDOM.select(".info__button");
 		infoBtn.style.visibility = "hidden";
@@ -375,8 +378,6 @@ class UI {
 		const triviaBoardEl = MyDOM.select(".trivia__board");
 		triviaBoardEl.style.visibility = "hidden";
 	};
-
-	static resetStartValues = () => {};
 }
 
 //*===================================

@@ -47,10 +47,12 @@ body {
 }
 
 .trivia__board {
-  border: 2px solid red;
+  // border: 2px solid red;
+	display: flex;
+  justify-content: center;
+  align-items: center;
   visibility: hidden;
 	margin: 2rem;
-	display: flex;
 	gap: 4rem;
 }
 
@@ -137,13 +139,6 @@ padding-bottom: 0.2rem;
 	padding: 0.4rem;
 }
 
-.trivia__board {
-	padding: 10rem 0;
-	// border: 2px solid red;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
 .player1 {
 	transform: rotate(90deg);
 }

@@ -1,24 +1,20 @@
-// import Game from "./Game.mjs";
-// import Card from "./Card.mjs";
-// import UI from "./UI.mjs";
-// import MyDOM from "./MyDOM.mjs";
+//^===================================
+export default class Round {
+	constructor(props) {
+		this.props = props;
+	}
 
-// export default class Round {
-// 	constructor(props) {
-// 		this.props = props;
-// 		console.log(this.props);
-// 	}
-
-// 	makeCards() {
-// 		new Card(
-// 			this.props,
-// 			this.props.questions[this.props.currentRound],
-// 			1
-// 		).render();
-// 		new Card(
-// 			this.props,
-// 			this.props.questions[this.props.currentRound],
-// 			2
-// 		).render();
-// 	}
-// }
+	createCards = () => {
+		console.log("current round index is " + game.currentRoundIndex);
+		new Card(
+			this.props,
+			this.props.questions[this.props.currentRoundIndex],
+			1
+		).render();
+		new Card(
+			this.props,
+			this.props.questions[this.props.currentRoundIndex],
+			2
+		).render();
+	};
+}

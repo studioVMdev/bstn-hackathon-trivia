@@ -1,51 +1,71 @@
-// import Round from "./Round.mjs";
-// // import Card from "./Card.mjs";
-// import UI from "./UI.mjs";
-// import MyDOM from "./MyDOM.mjs";
+//^===================================
+export default class Game {
+	constructor(questions) {
+		// this.questions = null;
+		// this.totalRounds = 0;
+		// this.currentRoundIndex = 0;
+		// this.score1 = 0;
+		// this.score2 = 0;
+		// this.submittedAnswers = 0;
 
-// export default class Game {
-// 	constructor(questions) {
-// 		this.questions = null;
-// 		this.totalRounds = 0;
-// 		this.currentRound = 0;
-// 		this.score1 = 0;
-// 		this.score2 = 0;
-// 		this.submittedAnswers = 0;
-// 	}
+		this.state = {
+			questions: null,
+			totalRounds: 0,
+			currentRoundIndex: 0,
+			score1: 0,
+			score2: 0,
+			submittedAnswers: 0,
+		};
+	}
 
-// 	getQuestions(URL) {
-// 		return axios.get(URL).then((response) => {
-// 			this.questions = response.data;
-// 			this.totalRounds = response.data.length;
+	getQuestions = (URL) => {
+		const { state } = this.state;
 
-// 			this.newRound(response.data);
-// 		});
-// 	}
+		return axios.get(URL).then((response) => {
+			state.questions = response.data;
+			state.totalRounds = response.data.length;
+			state.newRound(response.data);
+		});
+	};
 
-// 	getState() {
-// 		return {
-// 			questions: this.questions,
-// 			totalRounds: this.totalRounds,
-// 			currentRound: this.currentRound,
-// 			score1: this.score1,
-// 			score2: this.score2,
-// 			submittedAnswers: this.submittedAnswers,
-// 		};
-// 	}
+	getState = () => {
+		return {
+			questions: this.questions,
+			totalRounds: this.totalRounds,
+			currentRoundIndex: this.currentRoundIndex,
+			score1: this.score1,
+			score2: this.score2,
+			submittedAnswers: this.submittedAnswers,
+		};
+	};
 
-// 	//! on next, create new round
+	newRound = () => {
+		UI.clearCards();
+		UI.hideInfoBtn();
+		console.log(
+			this.totalRounds + " total rounds",
+			this.currentRoundIndex + " current round"
+		);
+		game.submittedAnswers = 0;
 
-// 	newRound() {
-// 		if (this.totalRounds >= this.currentRound) {
-// 			new Round(this.getState()).makeCards();
-// 			this.currentRound++;
-// 		} else {
-// 			console.log("gameover");
-// 		}
-// 	}
+		if (this.totalRounds > this.currentRoundIndex) {
+			UI.showBoard();
+			console.log(this.getState(), "state before new round");
+			new Round(this.getState()).createCards();
+		}
+	};
 
-// 	increment(property) {
-// 		console.log(property);
-// 		this[property]++;
-// 	}
-// }
+	increment = (property) => {
+		this[property]++;
+	};
+
+	getWinner = () => {
+		if (this.score1 > this.score2) {
+			return "Player 1 won!";
+		} else if (this.score1 < this.score2) {
+			return "Player 2 won!";
+		} else {
+			return "It was a draw!";
+		}
+	};
+}

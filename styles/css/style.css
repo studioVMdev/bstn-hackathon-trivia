@@ -245,10 +245,11 @@ body {
 }
 
 .trivia__board {
-  border: 2px solid red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   visibility: hidden;
   margin: 2rem;
-  display: flex;
   gap: 4rem;
 }
 
@@ -351,13 +352,6 @@ body {
 .btn__primary {
   height: 2rem;
   padding: 0.4rem;
-}
-
-.trivia__board {
-  padding: 10rem 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .player1 {
