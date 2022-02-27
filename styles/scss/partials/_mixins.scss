@@ -1,11 +1,43 @@
-@use './variables' as *;
+@use "./variables" as *;
 
-@mixin card-style{
-  background-color: $clr-primary-dark;
-	padding: 2rem;
+@mixin card-style {
+	background-color: $clr-primary-dark;
+	padding: 1rem;
 	border-radius: 1rem;
-  border: 3px dashed $clr-accent-dark;
+	border: 2px dashed $clr-accent-dark;
 	max-width: 24rem;
-  -webkit-box-shadow: 5px 5px 15px 5px rgba(22,49,100,0.31); 
-  box-shadow: 5px 5px 15px 5px rgba(7, 29, 69, 0.31);
+	-webkit-box-shadow: 5px 5px 15px 5px rgba(22, 49, 100, 0.31);
+	box-shadow: 5px 5px 15px 5px rgba(7, 29, 69, 0.31);
+  @include media-tablet{
+    padding: 2rem;
+  }
+}
+
+@mixin flex($justify: center, $align: center, $direction: row) {
+	display: flex;
+	flex-direction: $direction;
+	justify-content: $justify;
+	align-items: $align;
+}
+
+@mixin padding-site {
+	padding: 0 1.6rem;
+	@include media-tablet {
+		padding: 0 3.6rem;
+	}
+	@include media-desktop {
+		max-width: 100rem;
+	}
+}
+
+@mixin media-tablet {
+	@media only screen and (min-width: $breakpoint-tablet) {
+		@content;
+	}
+}
+
+@mixin media-desktop {
+	@media only screen and (min-width: $breakpoint-desktop) {
+		@content;
+	}
 }

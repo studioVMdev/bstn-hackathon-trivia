@@ -4,3 +4,11 @@ $clr-primary-light: #e2e6dd;
 
 $clr-accent-dark: #3d3191;
 $clr-accent-light: #FFBB33;
+
+$clr-primary-correct: lightseagreen;
+$clr-primary-incorrect: lightcoral;
+
+// Breakpoints
+// Mobile first design up to 768px
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1280px;

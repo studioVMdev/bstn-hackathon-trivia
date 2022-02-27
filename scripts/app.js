@@ -337,6 +337,8 @@ class UI {
 	static showStartMenu = () => {
 		const startMenuEl = MyDOM.select(".start");
 		startMenuEl.style.visibility = "visible";
+    const infoEl = MyDOM.select('.info');
+    infoEl.style.visibility = "hidden";
 	};
 
 	static showInfoBtn = () => {
@@ -359,7 +361,9 @@ class UI {
 			infoContainer.style.visibility = "visible";
 			infoMessage.innerText = game.getWinner();
 			infoContainer.classList.add("card-style");
-			infoBtn.innerText = "Play Again";
+      infoBtn.innerText = "Play Again";
+      const infoEl = MyDOM.select('.info');
+      infoEl.style.visibility = "visible";
 			infoBtn.addEventListener("click", UI.playAgain);
 		}
 	};

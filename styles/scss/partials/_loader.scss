@@ -1,7 +1,7 @@
 @use './variables' as *;
 
 
-.loader7{
+.loader{
 	position: relative;
 	width: 40px;
 	height: 40px;
@@ -16,18 +16,18 @@
 	background-color: rgba(255, 255, 255, .2);
 }
 
-.loader7:before{
+.loader:before{
 	content: "";
 	position: absolute;
 	background-color: $clr-accent-light;
 	height: 10px;
 	width: 10px;
 	border-radius: 10px;
-	-webkit-animation: loader7 2s ease-in-out infinite;
-  animation: loader7 2s ease-in-out infinite;
+	-webkit-animation: loader 2s ease-in-out infinite;
+  animation: loader 2s ease-in-out infinite;
 }
 
-.loader7:after{
+.loader:after{
   content: "";
 	position: absolute;
   background-color: $clr-accent-light;
@@ -37,12 +37,12 @@
 	width: 0px;
 	z-index: 0;
 	opacity: 1;
-	-webkit-animation: loader72 3s ease-in-out infinite;
-			animation: loader72 3s ease-in-out infinite;
+	-webkit-animation: loader2 3s ease-in-out infinite;
+			animation: loader2 3s ease-in-out infinite;
 }
 
 
-@-webkit-keyframes loader7{
+@-webkit-keyframes loader{
     0%{left: -12px; top: -12px;}
     25%{left:42px; top:-12px;}
     50%{left: 42px; top: 42px;}
@@ -50,7 +50,7 @@
     100%{left:-12px; top:-12px;}
 }
 
-@keyframes loader7{
+@keyframes loader{
     0%{left: -12px; top: -12px;}
     25%{left:42px; top:-12px;}
     50%{left: 42px; top: 42px;}
@@ -58,76 +58,16 @@
     100%{left:-12px; top:-12px;}
 }
 
-@-webkit-keyframes loader72{
+@-webkit-keyframes loader2{
     0%{width: 0px;}
     70%{width: 40px; opacity: 1;}
     90%{opacity: 0; width: 40px;}
     100%{opacity: 0;width: 0px;}
 }
 
-@keyframes loader72{
+@keyframes loader2{
     0%{width: 0px;}
     70%{width: 40px; opacity: 1;}
     90%{opacity: 0; width: 40px;}
     100%{opacity: 0;width: 0px;}
 }
-
-// .loader4{
-// 	position: relative;
-//   text-align: center;
-// 	width: 150px;
-// 	height: 20px;
-
-// 	top: 45%;
-// 	top: -webkit-calc(50% - 10px);
-// 	top: calc(50% - 10px);
-// 	left: 25%;
-// 	left: -webkit-calc(50% - 75px);
-// 	left: calc(50% - 75px);
-
-// 	background-color: rgba(255,255,255,0.2);
-// }
-
-// .loader4:before{
-// 	content: "";
-// 	position: absolute;
-// 	background-color: #fff;
-// 	top: 0px;
-// 	left: 0px;
-// 	height: 20px;
-// 	width: 0px;
-// 	z-index: 0;
-// 	opacity: 1;
-// 	-webkit-transform-origin:  100% 0%;
-// 			transform-origin:  100% 0% ;
-// 	-webkit-animation: loader4 10s ease-in-out infinite;
-// 			animation: loader4 3s ease-in-out infinite;
-// }
-
-// .loader4:after{
-// 	content: "LOADING ...";
-// 	color: #fff;
-// 	font-family:  Lato,"Helvetica Neue" ;
-// 	font-weight: 200;
-// 	font-size: 16px;
-// 	position: absolute;
-// 	width: 100%;
-// 	height: 20px;
-// 	line-height: 20px;
-// 	left: 0;
-// 	top: 0;
-// }
-
-// @-webkit-keyframes loader4{
-//     0%{width: 0px;}
-//     70%{width: 100%; opacity: 1;}
-//     90%{opacity: 0; width: 100%;}
-//     100%{opacity: 0;width: 0px;}
-// }
-
-// @keyframes loader4{
-//     0%{width: 0px;}
-//     70%{width: 100%; opacity: 1;}
-//     90%{opacity: 0; width: 100%;}
-//     100%{opacity: 0;width: 0px;}
-// }
